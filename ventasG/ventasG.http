@@ -1,0 +1,6 @@
+@ventasG_HostAddress = http://localhost:5064
+
+GET {{ventasG_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
