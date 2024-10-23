@@ -25,44 +25,52 @@ namespace ventasG.Controllers
         public async Task<ActionResult<IEnumerable<Order>>> GetOrder_TB()
         {
             return await _context.Order_TB.ToListAsync();
+
         }
 
         // GET: api/Orders/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Order>> GetOrder(int id)
         {
-            var order = await _context.Order_TB.FindAsync(id);
+            var Order = await _context.Order_TB
+             .Include(c => c.Employee)
+             .Include(c => c.OrderDetail)
+             .FirstOrDefaultAsync(c => c.Orderid == id);
 
-            if (order == null)
+            if (Order == null)
             {
                 return NotFound();
             }
 
-            return order;
+            return Ok(Order);
         }
 
         // PUT: api/Orders/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrder(int id, Order order)
+        public async Task<IActionResult> PutOrder(int id, OrderCreatePutDto order)
         {
 
-            // por si es null los de productos de la tb details
-            if (order.orderDetails == null || !order.orderDetails.Any())
-            {
-                return BadRequest("La orden debe tener al menos un artículo.");
+            var orderEdit = await _context.Order_TB.FindAsync(id);
+            if (orderEdit == null) {
+               
+                return NotFound();
 
             }
 
-            if (id != order.id)
-            {
-                return BadRequest();
-            }
+            orderEdit.TotalValue = order.TotalValue;
+            orderEdit.state = order.state;
+            orderEdit.description = order.description;
+            orderEdit.id_OrderDetail = order.id_OrderDetail;
+            orderEdit.EmployeeId = orderEdit.EmployeeId;
 
-            _context.Entry(order).State = EntityState.Modified;
+
+
+            
 
             try
             {
+                _context.Entry(order).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -85,25 +93,10 @@ namespace ventasG.Controllers
         [HttpPost]
         public async Task<ActionResult<Order>> PostOrder(Order order)
         {
-
-            // por si es null los de productos de la tb details
-            if (order.orderDetails == null || !order.orderDetails.Any()) {
-                return BadRequest("La orden debe tener al menos un artículo.");
-
-            }
-
-
-            // Verificar que los artículos pertenezcan a la misma compañía que el empleado
-            var employee = await _context.Employee_TB.FindAsync(order.Employee_id);
-            if (employee == null)
-            {
-                return NotFound("Empleado no encontrado.");
-            }
-
             _context.Order_TB.Add(order);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetOrder", new { id = order.id }, order);
+            return CreatedAtAction("GetOrder", new { id = order.Orderid }, order);
         }
 
         // DELETE: api/Orders/5
@@ -124,7 +117,7 @@ namespace ventasG.Controllers
 
         private bool OrderExists(int id)
         {
-            return _context.Order_TB.Any(e => e.id == id);
+            return _context.Order_TB.Any(e => e.Orderid == id);
         }
     }
 }

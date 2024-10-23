@@ -46,7 +46,7 @@ namespace ventasG.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutOrderDetails(int id, OrderDetails orderDetails)
         {
-            if (id != orderDetails.Id)
+            if (id != orderDetails.id)
             {
                 return BadRequest();
             }
@@ -80,7 +80,7 @@ namespace ventasG.Controllers
             _context.OrderDetails_TB.Add(orderDetails);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetOrderDetails", new { id = orderDetails.Id }, orderDetails);
+            return CreatedAtAction("GetOrderDetails", new { id = orderDetails.id }, orderDetails);
         }
 
         // DELETE: api/OrderDetails/5
@@ -101,7 +101,7 @@ namespace ventasG.Controllers
 
         private bool OrderDetailsExists(int id)
         {
-            return _context.OrderDetails_TB.Any(e => e.Id == id);
+            return _context.OrderDetails_TB.Any(e => e.id == id);
         }
     }
 }

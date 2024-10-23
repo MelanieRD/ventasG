@@ -1,9 +1,18 @@
-﻿namespace ventasG.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using ventasG.Models;
+
+namespace ventasG.Models
 {
     public class OrderDetails
     {
-        public int Id { get; set; }
-        public int Product_id { get; set; }
-        public int Order_id { get; set; }
+        public int id { get; set; }
+
+        public int Productid { get; set; }
+
+        public int Orderid { get; set; }
+
+        public Product Product { get; set; }
+        public Order Order { get; set; }
     }
 }
+

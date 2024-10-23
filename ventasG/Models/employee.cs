@@ -8,7 +8,11 @@ namespace ventasG.Models
  
         public string FullName { get; set; }
         
-        public string company_id { get; set; }
+
+        public int Companyid { get; set; }
+
+        public virtual Company Company { get; set; }
+
 
     }
 }

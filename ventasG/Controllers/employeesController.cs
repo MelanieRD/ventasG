@@ -24,7 +24,18 @@ namespace ventasG.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<employee>>> GetEmployee_TB()
         {
-            return await _context.Employee_TB.ToListAsync();
+            ;
+
+            var employee = await _context.Employee_TB.Select(e => new
+            {
+                e.Id,
+                e.FullName,
+                e.Companyid,
+                companyName = e.Company.Name
+
+            }).ToListAsync();
+
+            return Ok(employee);
         }
 
         // GET: api/employees/5

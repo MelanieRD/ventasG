@@ -24,34 +24,52 @@ namespace ventasG.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Company>>> GetCompany_TB()
         {
-            return await _context.Company_TB.ToListAsync();
+            var companies = await _context.Company_TB
+         .Select(c => new {
+             c.Id,
+             c.Name,
+             c.description,
+             Employees = c.Employees.Select(e => new { e.FullName }),  // Trae solo el nombre de empleados
+             Products = c.Products.Select(p => new { p.Name, p.Price }) // Trae solo nombre y precio de productos
+         })
+         .ToListAsync();
+
+            return Ok(companies);
+
         }
 
         // GET: api/Companies/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Company>> GetCompany(int id)
         {
-            var company = await _context.Company_TB.FindAsync(id);
+            var company = await _context.Company_TB
+             .Include(c => c.Employees)   
+             .Include(c => c.Products)   
+             .FirstOrDefaultAsync(c => c.Id == id);
 
             if (company == null)
             {
                 return NotFound();
             }
 
-            return company;
+            return Ok(company); 
         }
 
         // PUT: api/Companies/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCompany(int id, Company company)
+        public async Task<IActionResult> PutCompany(int id, CreatePutCompanyDto company)
         {
-            if (id != company.Id)
+            var companyEdit = await _context.Company_TB.FindAsync(id);
+
+            if (company == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            _context.Entry(company).State = EntityState.Modified;
+            // Actualiza solo las propiedades permitidas
+            companyEdit.Name = company.Name;
+            companyEdit.description = company.Description;
 
             try
             {
@@ -75,9 +93,17 @@ namespace ventasG.Controllers
         // POST: api/Companies
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Company>> PostCompany(Company company)
+        public async Task<ActionResult<Company>> PostCompany(CreatePutCompanyDto company)
         {
-            _context.Company_TB.Add(company);
+
+            var newCompany = new Company { 
+            Name = company.Name,
+            description = company.Description
+
+            };
+
+
+            _context.Company_TB.Add(newCompany);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetCompany", new { id = company.Id }, company);
