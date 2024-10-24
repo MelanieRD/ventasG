@@ -86,9 +86,17 @@ namespace ventasG.Controllers
         // POST: api/employees
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<employee>> Postemployee(employee employee)
+        public async Task<ActionResult<employee>> Postemployee(EmployeePutCreateDto employee)
         {
-            _context.Employee_TB.Add(employee);
+            var newEmployee = new employee {
+                
+                Id = employee.Id,
+                FullName = employee.FullName,
+                Companyid = employee.Companyid,
+
+            };
+
+            _context.Employee_TB.Add(newEmployee);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("Getemployee", new { id = employee.Id }, employee);

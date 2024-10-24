@@ -11,8 +11,21 @@ namespace ventasG.Models
         public int Orderid { get; set; }
         public string state { get; set; }
 
-        public DateOnly? delivery_date { get; set; }
+        public DateTime delivery_date { get; set; }
      
+    }
+
+
+
+    public class InvoicePutPostDto
+    {
+        public int id { get; set; }
+
+        public int Orderid { get; set; }
+        public string state { get; set; }
+
 
     }
+
+
 }

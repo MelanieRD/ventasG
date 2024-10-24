@@ -16,5 +16,7 @@ namespace ventasG.Models
         public DbSet<Order> Order_TB { get; set; }
         public DbSet<OrderDetails> OrderDetails_TB { get; set; }
         public DbSet<Product> Product_TB { get; set; }
+
+        public DbSet<User> User_TB { get; set; }
     }
 }

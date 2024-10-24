@@ -14,5 +14,16 @@ namespace ventasG.Models
         public Product Product { get; set; }
         public Order Order { get; set; }
     }
+
+
+
+    public class OrderDetailsPutCreateDto {
+        public int id { get; set; }
+
+        public int Productid { get; set; }
+
+        public int Orderid { get; set; }
+
+    }
 }
 

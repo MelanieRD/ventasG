@@ -12,7 +12,8 @@
 
         public employee Employee { get; set; }
         public ICollection<OrderDetails> OrderDetail { get; set; }
-        public ICollection<Invoice> Invoices { get; set; }
+       
+        // public ICollection<Invoice> Invoices { get; set; }
     }
 
 

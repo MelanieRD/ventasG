@@ -15,4 +15,13 @@ namespace ventasG.Models
 
 
     }
+
+
+    public class EmployeePutCreateDto {
+
+        public int Id { get; set; }
+        public string FullName { get; set; }
+        public int Companyid { get; set; }
+
+    }
 }

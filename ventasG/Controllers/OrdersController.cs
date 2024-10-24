@@ -24,18 +24,39 @@ namespace ventasG.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Order>>> GetOrder_TB()
         {
-            return await _context.Order_TB.ToListAsync();
 
+
+            var order = await _context.Order_TB.Select(o => new  {
+            o.Orderid,
+            o.state,
+            o.description,
+            o.EmployeeId,
+            Employee = o.Employee.FullName,
+            o.id_OrderDetail,
+            Order_Detail = o.OrderDetail.Select(od => new {od.Product.Name, od.Product.Price }),
+            TotalValue = o.OrderDetail.Sum(od => od.Product.Price)
+
+
+            }).ToListAsync();
+            return Ok(order);
         }
 
         // GET: api/Orders/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Order>> GetOrder(int id)
         {
-            var Order = await _context.Order_TB
-             .Include(c => c.Employee)
-             .Include(c => c.OrderDetail)
-             .FirstOrDefaultAsync(c => c.Orderid == id);
+            var Order = await _context.Order_TB.Select(o => new
+            {
+
+                o.Orderid,
+                o.state,
+                o.description,
+                o.EmployeeId,
+                Employee = o.Employee.FullName,
+                o.id_OrderDetail,
+                Order_Detail = o.OrderDetail.Select(od => new { od.Product.Name, od.Product.Price }),
+                TotalValue = o.OrderDetail.Sum(od => od.Product.Price)
+            }).FirstOrDefaultAsync(c => c.Orderid == id);
 
             if (Order == null)
             {
@@ -62,15 +83,11 @@ namespace ventasG.Controllers
             orderEdit.state = order.state;
             orderEdit.description = order.description;
             orderEdit.id_OrderDetail = order.id_OrderDetail;
-            orderEdit.EmployeeId = orderEdit.EmployeeId;
-
-
-
-            
+            orderEdit.EmployeeId = orderEdit.EmployeeId; 
 
             try
             {
-                _context.Entry(order).State = EntityState.Modified;
+               
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -91,9 +108,22 @@ namespace ventasG.Controllers
         // POST: api/Orders
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Order>> PostOrder(Order order)
+        public async Task<ActionResult<Order>> PostOrder(OrderCreatePutDto order)
         {
-            _context.Order_TB.Add(order);
+
+
+            var newOrder = new Order
+            {
+
+                id_OrderDetail = order.id_OrderDetail,
+                EmployeeId = order.EmployeeId,
+                state = order.state,
+                description = order.description,
+                TotalValue = 0
+
+            };
+
+            _context.Order_TB.Add(newOrder);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetOrder", new { id = order.Orderid }, order);
