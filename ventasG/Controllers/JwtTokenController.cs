@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using ventasG.Models;
 
 namespace ventasG.Controllers
 {
+   
     [ApiController]
     [Route("[controller]")]
     public class AuthController : ControllerBase
