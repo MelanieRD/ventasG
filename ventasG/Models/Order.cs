@@ -1,4 +1,6 @@
-﻿namespace ventasG.Models
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace ventasG.Models
 {
     public class Order
     {
@@ -27,6 +29,9 @@
         public int id_OrderDetail { get; set; }
         public string state { get; set; }
         public int TotalValue { get; set; }
+
+        [AllowNull]
+        public ICollection<OrderDetails> OrderDetail { get;} = new List<OrderDetails>();
 
     }
 }

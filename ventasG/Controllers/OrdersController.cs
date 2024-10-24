@@ -79,6 +79,22 @@ namespace ventasG.Controllers
 
             }
 
+            if (order.id_OrderDetail == null)
+            {
+                return BadRequest("La orden debe tener al menos un artículo asociado.");
+            }
+
+            var employee = await _context.Employee_TB.Include(e => e.Company).FirstOrDefaultAsync(e => e.Id == order.EmployeeId);
+
+            // Obtener los IDs de los productos asociados a los detalles de la orden
+            var productIds = order.OrderDetail.Select(od => od.Productid).ToList();
+            var products = await _context.Product_TB.Where(p => productIds.Contains(p.Id)).ToListAsync();
+
+            if (products.Any(p => p.Companyid != employee.Companyid))
+            {
+                return BadRequest("Todos los artículos deben pertenecer a la misma compañía que el empleado.");
+            }
+
             orderEdit.TotalValue = order.TotalValue;
             orderEdit.state = order.state;
             orderEdit.description = order.description;
@@ -111,16 +127,36 @@ namespace ventasG.Controllers
         public async Task<ActionResult<Order>> PostOrder(OrderCreatePutDto order)
         {
 
+            if (order.id_OrderDetail == null)
+            {
+                return BadRequest("La orden debe tener al menos un artículo asociado.");
+            }
+
+
+            // Verifica que todos los artículos pertenecen a la misma compañía que el empleado
+            var employee = await _context.Employee_TB.Include(e => e.Company).FirstOrDefaultAsync(e => e.Id == order.EmployeeId);
+
+            // Obtener los IDs de los productos asociados a los detalles de la orden
+            var productIds = order.OrderDetail.Select(od => od.Productid).ToList();
+            var products = await _context.Product_TB.Where(p => productIds.Contains(p.Id)).ToListAsync();
+
+           
+            if (products.Any(p => p.Companyid != employee.Companyid))
+            {
+                return BadRequest("Todos los artículos deben pertenecer a la misma compañía que el empleado.");
+            }
+
+
 
             var newOrder = new Order
             {
 
                 id_OrderDetail = order.id_OrderDetail,
                 EmployeeId = order.EmployeeId,
-                state = order.state,
+                state = "pendiente",
                 description = order.description,
                 TotalValue = 0
-               
+  
 
             };
 
