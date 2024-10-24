@@ -1,9 +1,6 @@
-SQL QUERY:
-
-
 USE [master]
 GO
-/****** Object:  Database [ventasBDD]    Script Date: 21/10/2024 08:32:42 ******/
+/****** Object:  Database [ventasBDD]    Script Date: 24/10/2024 14:24:58 ******/
 CREATE DATABASE [ventasBDD]
  CONTAINMENT = NONE
  ON  PRIMARY 
@@ -85,7 +82,7 @@ ALTER DATABASE [ventasBDD] SET QUERY_STORE (OPERATION_MODE = READ_WRITE, CLEANUP
 GO
 USE [ventasBDD]
 GO
-/****** Object:  Table [dbo].[Company_TB]    Script Date: 21/10/2024 08:32:42 ******/
+/****** Object:  Table [dbo].[Company_TB]    Script Date: 24/10/2024 14:24:58 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -100,7 +97,7 @@ CREATE TABLE [dbo].[Company_TB](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Employee_TB]    Script Date: 21/10/2024 08:32:42 ******/
+/****** Object:  Table [dbo].[Employee_TB]    Script Date: 24/10/2024 14:24:58 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -108,21 +105,21 @@ GO
 CREATE TABLE [dbo].[Employee_TB](
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[fullName] [varchar](150) NULL,
-	[Company_id] [int] NULL,
+	[CompanyId] [int] NULL,
  CONSTRAINT [PK_Employee_TB] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Invoice_TB]    Script Date: 21/10/2024 08:32:42 ******/
+/****** Object:  Table [dbo].[Invoice_TB]    Script Date: 24/10/2024 14:24:58 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Invoice_TB](
 	[id] [int] IDENTITY(1,1) NOT NULL,
-	[Order_id] [int] NOT NULL,
+	[Orderid] [int] NOT NULL,
 	[state] [varchar](10) NULL,
 	[delivery_date] [date] NULL,
  CONSTRAINT [PK_Invoice_TB] PRIMARY KEY CLUSTERED 
@@ -131,40 +128,40 @@ CREATE TABLE [dbo].[Invoice_TB](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Order_TB]    Script Date: 21/10/2024 08:32:42 ******/
+/****** Object:  Table [dbo].[Order_TB]    Script Date: 24/10/2024 14:24:58 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Order_TB](
-	[id] [int] IDENTITY(1,1) NOT NULL,
+	[Orderid] [int] IDENTITY(1,1) NOT NULL,
 	[description] [varchar](150) NULL,
-	[Employee_id] [int] NULL,
+	[EmployeeId] [int] NULL,
 	[state] [varchar](10) NULL,
 	[TotalValue] [int] NULL,
 	[id_OrderDetail] [int] NULL,
  CONSTRAINT [PK_Order_TB] PRIMARY KEY CLUSTERED 
 (
-	[id] ASC
+	[Orderid] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[OrderDetails_TB]    Script Date: 21/10/2024 08:32:42 ******/
+/****** Object:  Table [dbo].[OrderDetails_TB]    Script Date: 24/10/2024 14:24:58 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[OrderDetails_TB](
-	[Product_id] [int] NULL,
-	[Order_id] [int] NULL,
-	[id_OrderDetail] [int] IDENTITY(1,1) NOT NULL,
- CONSTRAINT [PK_OrderDetails_TB] PRIMARY KEY CLUSTERED 
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[Productid] [int] NULL,
+	[orderid] [int] NULL,
+ CONSTRAINT [PK_OrderDetail_TB] PRIMARY KEY CLUSTERED 
 (
-	[id_OrderDetail] ASC
+	[id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Product_TB]    Script Date: 21/10/2024 08:32:42 ******/
+/****** Object:  Table [dbo].[Product_TB]    Script Date: 24/10/2024 14:24:58 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -173,39 +170,54 @@ CREATE TABLE [dbo].[Product_TB](
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[name] [varchar](100) NULL,
 	[price] [int] NULL,
-	[Company_id] [int] NULL,
+	[Companyid] [int] NULL,
  CONSTRAINT [PK_Product_TB] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-ALTER TABLE [dbo].[Employee_TB]  WITH CHECK ADD  CONSTRAINT [FK_Employee_TB_Company_TB] FOREIGN KEY([Company_id])
+/****** Object:  Table [dbo].[User_TB]    Script Date: 24/10/2024 14:24:58 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[User_TB](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Username] [varchar](50) NOT NULL,
+	[PasswordHash] [varchar](250) NOT NULL,
+ CONSTRAINT [PK_User_TB] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[Employee_TB]  WITH CHECK ADD  CONSTRAINT [FK_Employee_TB_Company_TB] FOREIGN KEY([CompanyId])
 REFERENCES [dbo].[Company_TB] ([id])
 GO
 ALTER TABLE [dbo].[Employee_TB] CHECK CONSTRAINT [FK_Employee_TB_Company_TB]
 GO
-ALTER TABLE [dbo].[Invoice_TB]  WITH CHECK ADD  CONSTRAINT [FK_Invoice_TB_Order_TB] FOREIGN KEY([Order_id])
-REFERENCES [dbo].[Order_TB] ([id])
+ALTER TABLE [dbo].[Invoice_TB]  WITH CHECK ADD  CONSTRAINT [FK_Invoice_TB_Order_TB] FOREIGN KEY([Orderid])
+REFERENCES [dbo].[Order_TB] ([Orderid])
 GO
 ALTER TABLE [dbo].[Invoice_TB] CHECK CONSTRAINT [FK_Invoice_TB_Order_TB]
 GO
-ALTER TABLE [dbo].[Order_TB]  WITH CHECK ADD  CONSTRAINT [FK_Order_TB_Employee_TB] FOREIGN KEY([Employee_id])
+ALTER TABLE [dbo].[Order_TB]  WITH CHECK ADD  CONSTRAINT [FK_Order_TB_Employee_TB1] FOREIGN KEY([EmployeeId])
 REFERENCES [dbo].[Employee_TB] ([id])
 GO
-ALTER TABLE [dbo].[Order_TB] CHECK CONSTRAINT [FK_Order_TB_Employee_TB]
+ALTER TABLE [dbo].[Order_TB] CHECK CONSTRAINT [FK_Order_TB_Employee_TB1]
 GO
-ALTER TABLE [dbo].[Order_TB]  WITH CHECK ADD  CONSTRAINT [FK_Order_TB_OrderDetails_TB1] FOREIGN KEY([id_OrderDetail])
-REFERENCES [dbo].[OrderDetails_TB] ([id_OrderDetail])
+ALTER TABLE [dbo].[OrderDetails_TB]  WITH CHECK ADD  CONSTRAINT [FK_OrderDetail_TB_Order_TB] FOREIGN KEY([orderid])
+REFERENCES [dbo].[Order_TB] ([Orderid])
 GO
-ALTER TABLE [dbo].[Order_TB] CHECK CONSTRAINT [FK_Order_TB_OrderDetails_TB1]
+ALTER TABLE [dbo].[OrderDetails_TB] CHECK CONSTRAINT [FK_OrderDetail_TB_Order_TB]
 GO
-ALTER TABLE [dbo].[OrderDetails_TB]  WITH CHECK ADD  CONSTRAINT [FK_OrderDetails_TB_Product_TB] FOREIGN KEY([Product_id])
+ALTER TABLE [dbo].[OrderDetails_TB]  WITH CHECK ADD  CONSTRAINT [FK_OrderDetail_TB_Product_TB] FOREIGN KEY([Productid])
 REFERENCES [dbo].[Product_TB] ([id])
 GO
-ALTER TABLE [dbo].[OrderDetails_TB] CHECK CONSTRAINT [FK_OrderDetails_TB_Product_TB]
+ALTER TABLE [dbo].[OrderDetails_TB] CHECK CONSTRAINT [FK_OrderDetail_TB_Product_TB]
 GO
-ALTER TABLE [dbo].[Product_TB]  WITH CHECK ADD  CONSTRAINT [FK_Product_TB_Company_TB] FOREIGN KEY([Company_id])
+ALTER TABLE [dbo].[Product_TB]  WITH CHECK ADD  CONSTRAINT [FK_Product_TB_Company_TB] FOREIGN KEY([Companyid])
 REFERENCES [dbo].[Company_TB] ([id])
 GO
 ALTER TABLE [dbo].[Product_TB] CHECK CONSTRAINT [FK_Product_TB_Company_TB]
