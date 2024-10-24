@@ -24,35 +24,57 @@ namespace ventasG.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OrderDetails>>> GetOrderDetails_TB()
         {
-            return await _context.OrderDetails_TB.ToListAsync();
+            var orderDetails = await _context.OrderDetails_TB.Select(oD => new {
+                oD.id,
+                oD.Orderid,
+                oD.Productid,
+                Product = oD.Product.Name,
+                oD.Product.Price
+
+
+            }).ToListAsync();
+            return Ok(orderDetails);
         }
 
         // GET: api/OrderDetails/5
         [HttpGet("{id}")]
         public async Task<ActionResult<OrderDetails>> GetOrderDetails(int id)
         {
-            var orderDetails = await _context.OrderDetails_TB.FindAsync(id);
+            var orderDetails = await _context.OrderDetails_TB.Select(oD => new {
+                oD.id,
+                oD.Orderid,
+                oD.Productid,
+                Product = oD.Product.Name,
+                oD.Product.Price
+
+
+            }).FirstOrDefaultAsync(orderD => orderD.id == id);
 
             if (orderDetails == null)
             {
                 return NotFound();
             }
 
-            return orderDetails;
+            return Ok(orderDetails);
         }
 
         // PUT: api/OrderDetails/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrderDetails(int id, OrderDetails orderDetails)
+        public async Task<IActionResult> PutOrderDetails(int id, OrderDetailsPutCreateDto orderDetails)
         {
-            if (id != orderDetails.id)
+
+
+
+            var orderDetail = await _context.OrderDetails_TB.FindAsync(id);
+
+            if (id != orderDetails.id )
             {
                 return BadRequest();
             }
-
-            _context.Entry(orderDetails).State = EntityState.Modified;
-
+            orderDetail.Productid = orderDetails.Productid;
+            orderDetail.Orderid = orderDetails.Orderid;
+            
             try
             {
                 await _context.SaveChangesAsync();
@@ -75,12 +97,20 @@ namespace ventasG.Controllers
         // POST: api/OrderDetails
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<OrderDetails>> PostOrderDetails(OrderDetails orderDetails)
+        public async Task<ActionResult<OrderDetails>> PostOrderDetails(OrderDetailsPutCreateDto orderD)
         {
-            _context.OrderDetails_TB.Add(orderDetails);
+
+            var newOrderDetail = new OrderDetails
+            {
+             
+                id = orderD.id,
+                Productid = orderD.Productid,
+                Orderid = orderD.Orderid
+    };
+            _context.OrderDetails_TB.Add(newOrderDetail);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetOrderDetails", new { id = orderDetails.id }, orderDetails);
+            return CreatedAtAction("GetOrderDetails", new { id = orderD.id }, orderD);
         }
 
         // DELETE: api/OrderDetails/5

@@ -120,6 +120,7 @@ namespace ventasG.Controllers
                 state = order.state,
                 description = order.description,
                 TotalValue = 0
+               
 
             };
 
